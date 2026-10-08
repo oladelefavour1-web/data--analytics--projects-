@@ -12,7 +12,7 @@
 --   2. Paste this WHOLE file and click Run. (Safe to re-run: it rebuilds the tables.)
 --   3. Do NOT edit anything above the line that says "YOUR QUERIES START HERE".
 --   4. Write your queries BELOW that line, in order, one per question.
---
+
 --  All fares are in Naira (N). Cancelled trips have fare = 0.
 --  This data is deliberately messy, like real company data.
 -- =====================================================================
