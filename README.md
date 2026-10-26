@@ -78,9 +78,10 @@ The SQL analysis covers:
 5. Data cleaning
 6. Revenue by city
 7. Revenue by month
-8. Revenue by vehicle type
-9. Customers who never booked a trip
-10. Top 3 customers by total spend
+8. 
+9. Revenue by vehicle type
+10. Customers who never booked a trip
+11. Top 3 customers by total spend
 
 ### How to Use
 1. Go to [onecompiler.com/mysql](https://onecompiler.com/mysql) (keep the dropdown on MySQL).
@@ -94,3 +95,81 @@ The SQL analysis covers:
 ---
 
 ## Repository Structure
+
+## 3. DAC Data builder project
+# Store Sales Analysis Dashboard – Power BI
+
+A complete Power BI dashboard built for analyzing offline store sales performance using a star-schema data model.
+
+---
+
+## Project Overview
+
+This dashboard provides insights into sales performance, product ranking, geographic distribution, discount effectiveness, and trends over time for a multi-category retail store.
+
+**Key Metrics Covered:**
+- Total Net Sales: ₹122.31 Million
+- Total Gross Sales: ₹129.49 Million
+- Total Discount Given: ₹7.18 Million
+- Total Units Sold: 7,125
+- Total Orders: 3,510
+- Average Discount Rate: 5.65%
+
+---
+
+## Dashboard Structure (2 Pages)
+
+### Page 1: Executive Overview and Performance
+- **KPI Cards**: Total Net Sales, Gross Sales, Total Discount, Units Sold, Order Count, Average Discount %
+- **Top 5 Products** by Net Sales
+- **Bottom 5 Products** by Net Sales
+- **Sales by Product Line** (Donut Chart)
+- **Sales by City** (Bar Chart)
+- Slicers: Product Line, City, Date
+
+### Page 2: Trends and Details
+- Detailed transactional table (Order Matrix)
+- Total Discount by Promotion Name
+- Net Sales by Year (Line Chart)
+- Total Units Sold by Year (Line Chart)
+- Slicers: Date, Promotion Name, Product Name, Customer ID
+
+---
+
+## Data Model (Star Schema)
+
+| Table            | Type       | Description                              |
+|------------------|------------|------------------------------------------|
+| Fact Sales       | Fact       | 3,510 transaction records                |
+| Dim Customers    | Dimension  | 50 customers with City & State           |
+| Dim Product      | Dimension  | 30 products across 8 product lines       |
+| Dim Promotion    | Dimension  | 5 marketing campaigns + No Promotion     |
+
+**Relationships:**
+- Fact Sales[CustomerID] → Dim Customers[Customer ID]
+- Fact Sales[Product ID] → Dim Product[ProductID]
+- Fact Sales[PromotionID] → Dim Promotion[PromotionID]
+
+---
+
+## Calculated Columns (Power Query)
+
+The following columns were created in Power Query:
+
+- **Price Per Unit** → Merged from Dim Product
+- **Total Sales** = Units Sold × Price Per Unit
+- **Discount Percentage** → Based on PromotionID rules
+- **Discount Value** → Handles % discounts and Buy 1 Get 1 Free (PR003)
+- **Net Sales** = Total Sales – Discount Value
+
+---
+
+## Key DAX Measures
+
+```dax
+Total Net Sales = SUM('Fact Sales'[Net Sales])
+Total Gross Sales = SUM('Fact Sales'[Total Sales])
+Total Discount = SUM('Fact Sales'[Discount Value])
+Total Units Sold = SUM('Fact Sales'[Units Sold])
+Order Count = COUNTROWS('Fact Sales')
+Average Discount % = AVERAGE('Fact Sales'[Discount percentage])
